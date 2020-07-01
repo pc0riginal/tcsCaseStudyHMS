@@ -1,0 +1,56 @@
+  
+{% extends "layout.html" %}
+{% block content %}
+{% if not patientData %}
+<h3 class="text-center">patient not exist!</h3>
+{% else %}
+<div class="search mt-2 mb-2 d-flex justify-content-center align-items-center">
+    <form action="{{url_for('viewAllPatient')}}" class="form-inline my-2 my-lg-0" method="GET" novalidate>
+        <input type="text" name="search" class="form-control  mr-sm-2" placeholder="search by id">
+        <button type="submit" class="btn btn-outline-success my-2 my-sm-0">Search</button>
+    </form>
+</div>
+
+<div class="table-responsive">   
+        <table class="table table-bordered table-sm">
+            <thead>
+                <tr>
+                    <th scope="col">SSN ID</th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">TypeOfBed</th>
+                    <th scope="col">Address</th>
+                    <th scope="col">City</th>
+                    <th scope="col">State</th>
+                    <th scope="col">Date</th>
+                    {% if delete %}
+                    <th scope="col">Action</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for patient in patientData %}
+                <tr>
+                    <td>{{patient['patient_id']}}</td>
+                    <td>{{patient['name']}}</td>
+                    <td>{{patient['age']}}</td>
+                    <td>{{patient['typeOfBed']}}</td>
+                    <td>{{patient['addressline1']}} {{patient['addressline2']}}</td>
+                    <td>{{patient['city']}}</td>
+                    <td>{{patient['state']}}</td>
+                    <td>{{patient['date']}}</td>
+                    {% if delete %}
+                        <td>
+                            <form action="{{ url_for('dischargePatient') }}" method="post">
+                                <input type="hidden" name="pid" value="{{ patient['patient_id'] }}">
+                                <button type="submit" class="btn btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+{% endblock %}

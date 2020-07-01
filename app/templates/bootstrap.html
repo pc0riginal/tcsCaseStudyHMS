@@ -37,7 +37,10 @@
     font-style: bold;
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   }
-
+  html, body
+  {
+    height: 100%;
+  }
   .nav-item {
     margin-left: 15px;
     justify-content: center;
@@ -49,20 +52,27 @@
   }
 
   .header {
-    background-color: wheat;
+    background-color:lightgoldenrodyellow;
   }
 
-  .footer {
+  .site-footer {
     background-color: #26272b;
     font-size: 15px;
     color: #737373;
     justify-content: center;
     align-items: center;
-    position: fixed;
-    bottom: 0em;
     width: 100%;
+    bottom: 0;
+    overflow: hidden;
+    position: relative;
+    left: 0;
   }
-
+  .container { 
+    min-height: 75%; 
+  }
+  .table{
+    font-family: Verdana, Geneva, Tahoma, sans-serif;
+  }
   /* .dropdown-menu{
           background-color: mediumblue;
       } */
