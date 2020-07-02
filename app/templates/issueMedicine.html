@@ -1,0 +1,151 @@
+{% extends "layout.html" %} {% block content %}
+<div class="row mb-2">
+  <div class="col mb-2">
+    <h3>Medicines</h3>
+    <hr>
+    <form id="medicine" action="" method="GET">
+      <div class="form-group">
+        <label for="Medicine">Medicine</label>
+        <select class="form-control" id="medicineSelect" name="medicine">
+          {% for medicine in medicines %}
+          <option value="{{ medicine['medicine']}} + {{medicine['price']}}"
+            >{{ medicine['medicine']}}</option
+          >
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Quantity</label>
+        <select class="form-control" id="quantitySelect" name="quantity">
+          {% for i in range(10) %}
+          <option value="{{ i+1 }}">{{ i+1 }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+  </div>
+  <div class="col mb-2">
+    <h3>Cart</h3>
+    <hr />
+    <div class="table-responsive">
+        {% set total = {'value': 0} %}
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Medicine</th>
+            <th scope="col">Quantity</th>
+            <th scope="col">Price</th>
+            <th scope="col">Total price</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for medicine in session['medicines'] %}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td>{{medicine['name']}}</td>
+            <td>{{medicine['quan']}}</td>
+            <td>{{medicine['price']}}</td>
+            <td>{{medicine['total']}}</td>
+            {% if total.update({"value": medicine['total']|int + total.value|int }) %} {% endif %}
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td>{{ total.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col">
+        <form action="" method="GET">
+            <input type="hidden" name="clear" value="1">
+          <button class="btn btn-danger">Clear</button>
+        </form>
+      </div>
+      <div class="col">
+        <form action="" method="GET">
+            <input type="hidden" name="add" value="1">
+          <button class="btn btn-primary">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- <div class="table-responsive">
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Medicine</th>
+        <th scope="col">Available Quantity</th>
+        <th scope="col">Price</th>
+        <th scope="col">Add</th>
+        <th scope="col">Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for medicine in medicines %}
+      <tr>
+        <td>{{loop.index}}</td>
+        <td>{{medicine['medicine']}}</td>
+        <td>{{medicine['quantity']}}</td>
+        <td>{{medicine['price']}}</td>
+        <td>
+          <input type="number" name="add" min="1" class="form-control w-2" />
+        </td>
+
+        <td>
+          {% if medicine['available'] %}
+          <button class="btn btn-primary btn-sm">Add</button>
+          {% else %}
+          <button class="btn btn-primary btn-sm" disabled>Add</button>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div> -->
+<!-- <script type="text/javascript">
+  $("#medicine").submit(function (e) {
+    e.preventDefault(); // avoid to execute the actual submit of the form.
+
+    //   console.log($("#price").val()) 
+    var form = $(this)
+    $.ajax({
+      type: "POST",
+      url: "",
+      data: form.serialize(),
+      success: function (data) {
+        var medicine = [];
+        if (localStorage.getItem("medicines")) {
+          medicine = JSON.parse(localStorage.getItem("medicines"));
+        }
+        var price = $("#medicineSelect")
+          .find("option:selected")
+          .attr("data-price");
+        var quantity = $("#quantitySelect").val();
+        medicine.push({
+          medicide: $("#medicineSelect").val(),
+          price: price,
+          quantity: quantity,
+          total: price * quantity,
+        });
+        localStorage.setItem("medicines", JSON.stringify(medicine));
+      },
+    });
+  });
+  $(document).ready(function () {
+    if (localStorage.getItem('medicines')){
+        for (var key in localStorage) {
+        // $('body').append(localStorage.getItem(key));
+        console.log(localStorage.getItem(key));
+        }
+    }
+    
+  });
+</script> -->
+{% endblock %}

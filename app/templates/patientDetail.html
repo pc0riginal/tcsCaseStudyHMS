@@ -1,0 +1,66 @@
+{% extends "layout.html" %} {% block content %}
+<div class="table-responsive">
+  <h5>Patient Detail</h5>
+  <hr />
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">SSN ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Age</th>
+        <th scope="col">TypeOfBed</th>
+        <th scope="col">Address</th>
+        <th scope="col">City</th>
+        <th scope="col">State</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{patientData['patient_id']}}</td>
+        <td>{{patientData['name']}}</td>
+        <td>{{patientData['age']}}</td>
+        <td>{{patientData['typeOfBed']}}</td>
+        <td>{{patientData['addressline1']}} {{patientData['addressline2']}}</td>
+        <td>{{patientData['city']}}</td>
+        <td>{{patientData['state']}}</td>
+        <td>{{patientData['date']}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5>Issued Medicines</h5>
+  <hr />
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Medicine</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Total</th>
+        <th scope="col">Last Date of Issued</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for medicine in medicineData %}
+      <tr>
+        <td>{{loop.index}}</td>
+        <td>{{medicine['name']}}</td>
+        <td>{{medicine['quantity ']}}</td>
+        <td>{{medicine['price']}}</td>
+        <td>{{medicine['total']}}</td>
+        <td>{{medicine['date']}}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <form
+    action="{{ url_for('issueMedicine') }}"
+    class="text-center"
+    method="GET"
+  >
+    <input type="hidden" name="pid" value="{{patientData['patient_id']}}" />
+    <button type="submit" class="btn btn-primary">Issue Medicine</button>
+  </form>
+</div>
+{% endblock %}
