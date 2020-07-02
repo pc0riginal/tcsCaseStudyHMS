@@ -9,6 +9,8 @@ user = mongo.db['user']
 patient = mongo.db['patient']
 medicine = mongo.db['medicines']
 issued = mongo.db['issuedMedicines']
+diagno = mongo.db['diagnostic']
+conducted = mongo.db['conductedDiagnostics']
 
 
 @app.before_request
@@ -99,31 +101,24 @@ def viewAllPatient(delete=None):
 
     return render_template("viewAllPatient.html",viewAllPatient=True,patientData=patientData,delete=delete)  
 
-
-
-# @app.route('/searchPatient',methods=['GET','POST'])
-# def searchPatient():
-#     if not session.get("username"):
-#         return redirect("/login")
-#     pid = request.form.get('search')
-#     patientData = patient.find_one({"patient_id":form.patientID.data})
-#     if patientData:
-#         return redirect(url_for('editPatient',pid=form.patientID.data))
-#     else:
-#         flash(f"patient not fount!","danger")
-#     return render_template("searchPatient.html",searchPatient=True,form=form)  
     
-@app.route('/patientDetail/<pid>',methods=['GET','POST'])
-def patientDetail(pid=None):
+@app.route('/patientDetail/<pid>/<issue>',methods=['GET','POST'])
+@app.route('/patientDetail/<pid>/<diagno>',methods=['GET','POST'])
+def patientDetail(pid=None,issue=None,diagno=None,medicineData=None,diagnostics=None):
     if not session.get("username"):
         return redirect("/login")
     patientData = patient.find_one({"patient_id":pid})
-    medicineData = issued.find({"patient_id":pid})
-    return render_template("patientDetail.html",patientData=patientData,medicineData=medicineData)  
+    if issue:
+        medicineData = issued.find({"patient_id":pid})
+    elif diagno:
+        diagnostics = conducted.find({"patient_id":pid})
+    return render_template("patientDetail.html",patientData=patientData,medicineData=medicineData,issue=issue,diagnostics=diagnostics)  
 
 @app.route('/viewPatient',methods=['GET','POST'])
 @app.route('/viewPatient/<issue>',methods=['GET','POST'])
-def viewPatient(issue=None):
+@app.route('/viewPatient/<diagno>',methods=['GET','POST'])
+@app.route('/viewPatient/<bill>',methods=['GET','POST'])
+def viewPatient(issue=None,diagno=None,bill=None):
     if not session.get("username"):
         return redirect("/login")
     form = ViewPatient()
@@ -131,7 +126,11 @@ def viewPatient(issue=None):
         patientData = patient.find_one({"patient_id":form.patientID.data})
         if patientData:
             if issue:
-                return redirect(url_for('patientDetail',pid=form.patientID.data))
+                return redirect(url_for('patientDetail',pid=form.patientID.data,issue=True))
+            elif diagno:
+                return redirect(url_for('patientDetail',pid=form.patientID.data,diagno=True))
+            elif bill:
+                return redirect(url_for('billing',pid=form.patientID.data))
             return redirect(url_for('editPatient',pid=form.patientID.data))
         else:
             flash(f"patient not fount!","danger")
@@ -181,9 +180,62 @@ def issueMedicine():
     medicines = medicine.find()
     return render_template("issueMedicine.html",issueMedicine=True,medicines=medicines)  
 
+@app.route('/diagnostic',methods=['GET','POST'])
+def diagnostic():
+    if not session.get("username"):
+        return redirect("/login")
+    if request.args.get('pid'):
+        session['pid'] = request.args.get('pid')
+    if request.args.get('clear'):
+        session.pop('diagnostics')
+    if request.args.get('add'):
+        if 'diagnostics' in session:
+            for i in session.get('diagnostics'):
+                data = list(conducted.find({"patient_id":session.get('pid'),"name":i['name']}))
+                if not data:
+                    now = datetime.now()
+                    dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
+                    conducted.insert_one({"patient_id":session.get('pid'),"name":i['name'],"amount":int(i['amount']),"conducted":1,"total":int(i['amount']),"date":dt_string})
+                else:
+                    conducted.update({"patient_id":session.get('pid')},{"$inc":{"conducted":1,"total":i['amount']}})
+            flash('succesfully conducted',"success")
+            session.pop("diagnostics")
+            return redirect(url_for('patientDetail',pid=session.get('pid'),diagno=True))    
+        else:
+            flash('cart is empty','danger')
+    if 'diagnostics' in session:
+        if request.args.get('diagno'):
+            name = request.args.get('diagno')
+            amount = int(request.args.get('amount'))
+            f=0
+            for i in session.get('diagnostics'):
+                if i['name'] == name:
+                    f=1
+                    break
+            if not f:
+                session['diagnostics'].append({"name":name,"amount":amount})
+    else:
+        session['diagnostics'] = []
+    diagnostic = [i for i in diagno.find()]
+    return render_template("diagnostic.html",diagnostic=True, diagnostics=diagnostic)  
+
 @app.route("/logout",methods=['GET','POST'])
 def logout():
     if not session.get('username'):
         return redirect('/login')
     session.pop('username')
     return redirect('/login')
+
+
+@app.route('/billing/<pid>',methods=['GET','POST'])
+def billing(pid=None,medicines=None,diagnostics=None,patientData=None):
+    if not session.get("username"):
+        return redirect("/login")
+    if pid:
+        patientData = patient.find_one({"patient_id":pid})
+        if patientData:
+            medicines = issued.find({"patient_id":pid})
+            diagnostics = conducted.find({"patient_id":pid})
+        else:
+            flash(f"patient not fount!","danger")
+    return render_template("billing.html",billing=True,medicines=medicines,diagnostics=diagnostics,patientData=patientData)

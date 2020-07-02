@@ -28,6 +28,7 @@
       </tr>
     </tbody>
   </table>
+  {% if issue %}
   <h5>Issued Medicines</h5>
   <hr />
   <table class="table table-bordered table-sm">
@@ -55,12 +56,52 @@
     </tbody>
   </table>
   <form
-    action="{{ url_for('issueMedicine') }}"
+    action="{{ url_for('issuedMedicine') }}"
     class="text-center"
     method="GET"
   >
+
     <input type="hidden" name="pid" value="{{patientData['patient_id']}}" />
-    <button type="submit" class="btn btn-primary">Issue Medicine</button>
+    <button type="submit" class="btn btn-primary">{% if issue %} Issue Medicine {% else %} Add diagnostic {% endif %}</button>
   </form>
+  {% else %}
+  <h5>Diagnostic Conducted</h5>
+  <hr />
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Diagnostic</th>
+        <th scope="col">Amount</th>
+        <th scope="col">No of Conducted</th>
+        <th scope="col">Total</th>
+        <th scope="col">Last date of Conducted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for diagno in diagnostics %}
+      <tr>
+        <td>{{loop.index}}</td>
+        <td>{{diagno['name']}}</td>
+        <td>{{diagno['amount']}}</td>
+        <td>{{diagno['conducted']}}</td>
+        <td>{{diagno['total']}}</td>
+        <td>{{diagno['date']}}</td>
+   </tr>
+      {% endfor %}
+     
+    </tbody>
+  </table>
+  <form
+    action="{{ url_for('diagnostic') }}"
+    class="text-center"
+    method="GET"
+  >
+
+    <input type="hidden" name="pid" value="{{patientData['patient_id']}}" />
+    <button type="submit" class="btn btn-primary">Add diagnostic</button>
+  </form>
+  {% endif %}
 </div>
+
 {% endblock %}

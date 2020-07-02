@@ -1,0 +1,75 @@
+{% extends "layout.html" %} {% block content %}
+<div class="row mb-2">
+  <div class="col mb-2">
+    <h3>Medicines</h3>
+    <hr />
+    <form id="medicine" action="" method="GET">
+      <div class="form-group">
+        <label for="Medicine">Medicine</label>
+        <select class="form-control" id="diagnoSelect" name="diagno">
+          {% for diagno in diagnostics %}
+          <option index="{{ diagno['amount'] }}" value="{{ diagno['name'] }}"
+            >{{ diagno['name']}}</option
+          >
+          {% endfor %}
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputPassword1">Amount</label>
+        <input type="number" readonly="true" value="100" id="amount" name="amount" class="form-control" >
+      </div>
+      <button type="submit" class="btn btn-primary">Add</button>
+    </form>
+  </div>
+  <div class="col mb-2">
+    <h3>Cart</h3>
+    <hr />
+    <div class="table-responsive">
+        {% set total = {'value': 0} %}
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <th scope="col">No</th>
+            <th scope="col">Diagnostic</th>
+            <th scope="col">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for diagno in session['diagnostics'] %}
+          <tr>
+            <td>{{loop.index}}</td>
+            <td>{{diagno['name']}}</td>
+            <td>{{diagno['amount']}}</td>
+            {% if total.update({"value": diagno['amount']|int + total.value|int }) %} {% endif %}
+          </tr>
+          {% endfor %}
+          <tr>
+            <td>Total</td>
+            <td>{{ total.value }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="row">
+      <div class="col">
+        <form action="" method="GET">
+            <input type="hidden" name="clear" value="1">
+          <button class="btn btn-danger">Clear</button>
+        </form>
+      </div>
+      <div class="col">
+        <form action="" method="GET">
+            <input type="hidden" name="add" value="1">
+          <button class="btn btn-primary">Add</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+    $("#diagnoSelect").change(function(){
+        var amount = $('option:selected',this).attr('index');
+        document.getElementById("amount").value = amount;
+    });
+</script>
+{% endblock %}

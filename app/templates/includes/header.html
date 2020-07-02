@@ -1,56 +1,135 @@
 <div class="header">
-    <div>
-        <nav class="navbar navbar-expand-lg navbar-light">
-            <a class="navbar-brand" href="#">
-                <img src="{{ url_for('static',filename='images/hms.png')}}" height="35" class="logo d-inline-block align-top" alt="" loading="lazy" />
-            </a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown"
-                aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNavDropdown">
-                <ul class="navbar-nav">
-                    <li class="nav-item {% if index %} active {% endif %}">
-                        <a class="nav-link" href="{{ url_for('index') }}">Home <span class="sr-only">(current)</span></a>
-                    </li>
-                    <!-- <li class="nav-item">
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <a class="navbar-brand" href="#">
+        <img
+          src="{{ url_for('static',filename='images/hms.png')}}"
+          height="35"
+          class="logo d-inline-block align-top"
+          alt=""
+          loading="lazy"
+        />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarNavDropdown"
+        aria-controls="navbarNavDropdown"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNavDropdown">
+        <ul class="navbar-nav">
+          <li class="nav-item {% if index %} active {% endif %}">
+            <a class="nav-link" href="{{ url_for('index') }}"
+              >Home <span class="sr-only">(current)</span></a
+            >
+          </li>
+          <!-- <li class="nav-item">
                         <a class="nav-link" href="#">Patient</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#">Pricing</a>
                     </li> -->
-                    {% if session['type']=="pharma" %}
-                    <li class="nav-item dropdown {% if addPatient or viewPatient or viewAllPatient %} active {% endif %}">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Medicines
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{{ url_for('viewPatient',issue=True) }}">Issue Medicine</a>
-                        </div>
-                    </li>
-                    {% else %}
-                    <li class="nav-item dropdown {% if addPatient or viewPatient or viewAllPatient %} active {% endif %}">
-                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button"
-                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Patient
-                        </a>
-                        <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                            <a class="dropdown-item" href="{{ url_for('addPatient') }}">Add</a>
-                            <a class="dropdown-item" href="{{ url_for('viewPatient') }}">Update</a>
-                            <a class="dropdown-item" href="{{ url_for('viewAllPatient',delete=True)}}">Discharge</a>
-                            <a class="dropdown-item" href="{{ url_for('viewAllPatient') }}">View</a>
-                        </div>
-                    </li>
-                    {% endif %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('logout') }}" tabindex="-1" aria-disabled="true">Logout</a>
-                    </li> 
-                </ul>
+          {% if session['type']=="pharma" %}
+          <li
+            class="nav-item dropdown {% if addPatient or viewPatient or viewAllPatient %} active {% endif %}"
+          >
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Medicines
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a
+                class="dropdown-item"
+                href="{{ url_for('viewPatient',issue=True) }}"
+                >Issue Medicine</a
+              >
             </div>
-        </nav>
-    </div>
+          </li>
+          {% elif session['type']=="diagno" %}
+          <li
+            class="nav-item dropdown {% if addPatient or viewPatient or viewAllPatient %} active {% endif %}"
+          >
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Diagnostic
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a
+                class="dropdown-item"
+                href="{{ url_for('viewPatient',diagno=True) }}"
+                >Add Diagnostic</a
+              >
+            </div>
+          </li>
+          {% else %}
+          <li
+            class="nav-item dropdown {% if addPatient or viewPatient or viewAllPatient %} active {% endif %}"
+          >
+            <a
+              class="nav-link dropdown-toggle"
+              href="#"
+              id="navbarDropdownMenuLink"
+              role="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Patient
+            </a>
+            <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <a class="dropdown-item" href="{{ url_for('addPatient') }}"
+                >Add</a
+              >
+              <a class="dropdown-item" href="{{ url_for('viewPatient') }}"
+                >Update</a
+              >
+              <a
+                class="dropdown-item"
+                href="{{ url_for('viewAllPatient',delete=True)}}"
+                >Discharge</a
+              >
+              <a class="dropdown-item" href="{{ url_for('viewAllPatient') }}"
+                >View</a
+              >
+            </div>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('viewPatient',bill=True)  }}">Billing</a>
+          </li>
+          {% endif %}
+          <li class="nav-item">
+            <a class="nav-link" href="#">About</a>
+          </li>
+          <li class="nav-item">
+            <a
+              class="nav-link"
+              href="{{ url_for('logout') }}"
+              tabindex="-1"
+              aria-disabled="true"
+              >Logout</a
+            >
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </div>
 </div>
