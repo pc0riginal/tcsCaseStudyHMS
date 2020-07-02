@@ -1,0 +1,156 @@
+{% extends "layout.html" %}
+{% block content %}
+<div class="table-responsive">
+  <h5>Patient Detail</h5>
+  <hr />
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">SSN ID</th>
+        <th scope="col">Name</th>
+        <th scope="col">Age</th>
+        <th scope="col">TypeOfBed</th>
+        <th scope="col">Address</th>
+        <th scope="col">City</th>
+        <th scope="col">State</th>
+        <th scope="col">Date</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>{{patientData['patient_id']}}</td>
+        <td>{{patientData['name']}}</td>
+        <td>{{patientData['age']}}</td>
+        <td>{{patientData['typeOfBed']}}</td>
+        <td>{{patientData['addressline1']}} {{patientData['addressline2']}}</td>
+        <td>{{patientData['city']}}</td>
+        <td>{{patientData['state']}}</td>
+        <td id="date">{{patientData['date']}}</td>
+      </tr>
+      <tr>
+          <td>Total</td>
+          <td class="bed"></td>
+      </tr>
+    </tbody>
+  </table>
+  <h5>Issued Medicines</h5>
+  <hr />
+  {% set totalm = {'value': 0} %}
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Medicine</th>
+        <th scope="col">Quantity</th>
+        <th scope="col">Rate</th>
+        <th scope="col">Total</th>
+        <th scope="col">Last Date of Issued</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for medicine in medicines %}
+      <tr>
+        <td>{{loop.index}}</td>
+        <td>{{medicine['name']}}</td>
+        <td>{{medicine['quantity ']}}</td>
+        <td>{{medicine['price']}}</td>
+        <td>{{medicine['total']}}</td>
+        <td>{{medicine['date']}}</td>
+        {% if total.update({"value": medicine['total']|int + totalm.value|int }) %} {% endif %}
+      </tr>
+      {% endfor %}
+      <tr>
+        <td>Total</td>
+        <td>{{ totalm.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <h5>Diagnostic Conducted</h5>
+  <hr />
+  {% set total = {'value': 0} %}
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">No</th>
+        <th scope="col">Diagnostic</th>
+        <th scope="col">Amount</th>
+        <th scope="col">No of Conducted</th>
+        <th scope="col">Total</th>
+        <th scope="col">Last date of Conducted</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for diagno in diagnostics %}
+      <tr>
+        <td>{{loop.index}}</td>
+        <td>{{diagno['name']}}</td>
+        <td>{{diagno['amount']}}</td>
+        <td>{{diagno['conducted']}}</td>
+        <td>{{diagno['total']}}</td>
+        <td>{{diagno['date']}}</td>
+        {% if total.update({"value": diagno['total']|int + total.value|int }) %} {% endif %}
+   </tr>
+      {% endfor %}
+      <tr>
+        <td>Total</td>
+        <td>{{ total.value }}</td>
+      </tr>
+    </tbody>
+  </table>
+  <h3>Total Bill</h3>
+  <hr>
+  <table class="table table-bordered table-sm">
+    <thead>
+      <tr>
+        <th scope="col">Bill</th>
+        <th scope="col">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Bed</td>
+        <td class="bed"></td>
+      </tr>
+      <tr>
+        <td>Medicine</td>
+        <td>{{ totalm.value }}</td>
+      </tr>
+      <tr>
+        <td>Diagnostic</td>
+        <td>{{ total.value }}</td>
+      </tr>
+      <tr>
+        <th>Total</th>
+        <td id="total">{{ totalm.value+total.value}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+<script>
+    $(document).ready(function() {
+        // var date = new Date($("#date").text())
+        // alert(date)
+        var date = "{{ patientData['date'] }}"
+        var d = date.split(" ")
+        var day = d[0].split("/")
+        var h = d[1].split(":")
+        var dt_str = day[2]+"-"+day[1]+"-"+day[0]+" "+h[0]+":"+h[1]+":"+h[2];
+        var today = new Date().getTime();
+        var hours = new Date(Date.parse(dt_str)).getTime();
+        var diff = Math.round((today- hours)/3600000);
+        var bed = "{{patientData['typeOfBed']}}"
+        var bill = 0;
+        if(bed == "General"){
+            bill = diff*10;
+        }
+        else if(bed == "Semi Sharing"){
+            bill = diff*20;
+        }
+        else{
+            bill = diff*30;
+        }
+        $(".bed").text(bill);
+        $("#total").text(parseInt($("#total").text()) + bill)
+    });
+</script>
+{% endblock %}
