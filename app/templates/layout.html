@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#F79C00">
+    <meta id="meta" name="theme-color" content="#F79C00">
     {% include 'favicon.html' %}
     {% include 'bootstrap.html' %}
 </head>
@@ -19,3 +19,18 @@
 </body>
     {% include 'includes/footer.html' %}
 </html>
+<script>
+    $(document).ready(function(){
+        $("#meta").attr("content")
+        var cat = $("#message").attr("cat");
+        if(cat == "success"){
+            $("#meta").attr("content","#58F90C")
+        }
+        else if(cat =="danger"){
+            $("#meta").attr("content","#FF0606")
+        }
+        else{
+            $("#meta").attr("content","#F79C00")
+        }
+    })
+</script>
