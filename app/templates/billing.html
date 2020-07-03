@@ -56,7 +56,7 @@
         <td>{{medicine['price']}}</td>
         <td>{{medicine['total']}}</td>
         <td>{{medicine['date']}}</td>
-        {% if total.update({"value": medicine['total']|int + totalm.value|int }) %} {% endif %}
+        {% if totalm.update({"value": medicine['total']|int + totalm.value|int }) %} {% endif %}
       </tr>
       {% endfor %}
       <tr>

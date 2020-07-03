@@ -102,39 +102,41 @@ def viewAllPatient(delete=None):
     return render_template("viewAllPatient.html",viewAllPatient=True,patientData=patientData,delete=delete)  
 
     
-@app.route('/patientDetail/<pid>/<issue>',methods=['GET','POST'])
-@app.route('/patientDetail/<pid>/<diagno>',methods=['GET','POST'])
-def patientDetail(pid=None,issue=None,diagno=None,medicineData=None,diagnostics=None):
+# @app.route('/patientDetail/<pid>/<issue>',methods=['GET','POST'])
+@app.route('/patientDetail/<pid>/<string:view>',methods=['GET','POST'])
+def patientDetail(pid=None,issue=None,diagno=None,medicineData=None,diagnostics=None,view=None):
     if not session.get("username"):
         return redirect("/login")
     patientData = patient.find_one({"patient_id":pid})
-    if issue:
+    print(view)
+    if view=="issue":
         medicineData = issued.find({"patient_id":pid})
-    elif diagno:
+    elif view=="diagno":
         diagnostics = conducted.find({"patient_id":pid})
-    return render_template("patientDetail.html",patientData=patientData,medicineData=medicineData,issue=issue,diagnostics=diagnostics)  
+    return render_template("patientDetail.html",patientData=patientData,medicineData=medicineData,view=view,diagnostics=diagnostics)  
 
 @app.route('/viewPatient',methods=['GET','POST'])
-@app.route('/viewPatient/<issue>',methods=['GET','POST'])
-@app.route('/viewPatient/<diagno>',methods=['GET','POST'])
-@app.route('/viewPatient/<bill>',methods=['GET','POST'])
-def viewPatient(issue=None,diagno=None,bill=None):
+# @app.route('/viewPatient/<view>',methods=['GET','POST'])
+# @app.route('/viewPatient/<diagno>',methods=['GET','POST'])
+# @app.route('/viewPatient/<bill>',methods=['GET','POST'])
+def viewPatient(issue=None,diagno=None,bill=None,view=None):
     if not session.get("username"):
         return redirect("/login")
     form = ViewPatient()
+    view = request.args.get('view')
     if form.validate_on_submit():
         patientData = patient.find_one({"patient_id":form.patientID.data})
         if patientData:
-            if issue:
-                return redirect(url_for('patientDetail',pid=form.patientID.data,issue=True))
-            elif diagno:
-                return redirect(url_for('patientDetail',pid=form.patientID.data,diagno=True))
-            elif bill:
+            if view=="issue":
+                return redirect(url_for('patientDetail',pid=form.patientID.data,view='issue'))
+            elif view=="diagno":
+                return redirect(url_for('patientDetail',pid=form.patientID.data,view='diagno'))
+            elif view=="bill":
                 return redirect(url_for('billing',pid=form.patientID.data))
             return redirect(url_for('editPatient',pid=form.patientID.data))
         else:
             flash(f"patient not fount!","danger")
-    return render_template("viewPatient.html",viewPatient=True,form=form)  
+    return render_template("viewPatient.html",viewPatient=True,form=form,view=view)  
 
 @app.route('/issueMedicine',methods=['GET','POST'])
 def issueMedicine():
@@ -158,7 +160,7 @@ def issueMedicine():
                     issued.update({"patient_id":session.get('pid')},{"$inc":{"quantity":i['quan'],"total":i['quan']*i['price']}})
             flash('succesfully issued',"success")
             session.pop("medicines")
-            return redirect(url_for('patientDetail',pid=session.get('pid')))    
+            return redirect(url_for('patientDetail',pid=session.get('pid'),view="issue"))    
         else:
             flash('cart is empty','danger')
     if 'medicines' in session:
@@ -200,7 +202,7 @@ def diagnostic():
                     conducted.update({"patient_id":session.get('pid')},{"$inc":{"conducted":1,"total":i['amount']}})
             flash('succesfully conducted',"success")
             session.pop("diagnostics")
-            return redirect(url_for('patientDetail',pid=session.get('pid'),diagno=True))    
+            return redirect(url_for('patientDetail',pid=session.get('pid'),view="diagno"))    
         else:
             flash('cart is empty','danger')
     if 'diagnostics' in session:

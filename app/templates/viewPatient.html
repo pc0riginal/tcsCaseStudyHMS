@@ -5,6 +5,14 @@
         <div class="row ">
                 <form action="" method="POST" novalidate >
                     {{ form.hidden_tag() }}
+                    {% if view == "issue" %}
+                        <input type="hidden" name="view" value="issue">
+                    {% elif view =="diagno" %}
+                        <input type="hidden" name="view" value="diagno">
+                    {% elif view =="bill" %}
+                        <input type="hidden" name="view" value="bill">
+                    {% endif %}
+
                     <div class="form-group">
                         {{ form.patientID.label() }}
                         {{ form.patientID(class="form-control")}}

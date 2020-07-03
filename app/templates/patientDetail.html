@@ -28,7 +28,7 @@
       </tr>
     </tbody>
   </table>
-  {% if issue %}
+  {% if view=="issue" %}
   <h5>Issued Medicines</h5>
   <hr />
   <table class="table table-bordered table-sm">
@@ -47,7 +47,7 @@
       <tr>
         <td>{{loop.index}}</td>
         <td>{{medicine['name']}}</td>
-        <td>{{medicine['quantity ']}}</td>
+        <td>{{medicine['quantity']}}</td>
         <td>{{medicine['price']}}</td>
         <td>{{medicine['total']}}</td>
         <td>{{medicine['date']}}</td>
@@ -56,13 +56,13 @@
     </tbody>
   </table>
   <form
-    action="{{ url_for('issuedMedicine') }}"
+    action="{{ url_for('issueMedicine') }}"
     class="text-center"
     method="GET"
   >
 
     <input type="hidden" name="pid" value="{{patientData['patient_id']}}" />
-    <button type="submit" class="btn btn-primary">{% if issue %} Issue Medicine {% else %} Add diagnostic {% endif %}</button>
+    <button type="submit" class="btn btn-primary">Issue Medicine</button>
   </form>
   {% else %}
   <h5>Diagnostic Conducted</h5>
