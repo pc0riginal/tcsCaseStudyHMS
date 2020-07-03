@@ -34,32 +34,57 @@
     integrity="sha384-wvfXpqpZZVQGK6TAh5PVlGOfQNHSoD2xbE+QkPxCAFlNEevoEH3Sl0sibVcOQVnN"
     crossorigin="anonymous"
   />
+  <style>
+    body{
+      background-color:#00838F;
+      color: white;
+    }
+    h1{
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+  </style>
 </head>
 <body>
     {% include "messages.html" %}
-    <div class="d-flex justify-content-center align-items-center container">
-        <div class="row ">
-                <form action="" method="POST" style="margin-top:150px;" novalidate>
-                    <h3 class="text-center">{{ title }}</h3>
-                    {{ form.hidden_tag() }}
-                    <div class="form-group">
-                        {{ form.username.label(class="col-md-6 col-sm-12") }}
-                        {{ form.username(class="form-control") }}</br>
-                        {% for error in form.username.errors %}
-                            <span class="alert alert-danger">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <div class="form-group">
-                        {{ form.password.label(class="col-md-6 col-sm-12") }}
-                        {{ form.password(class="form-control") }}</br>
-                        {% for error in form.password.errors %}
-                            <span class="alert alert-danger">{{ error }}</span>
-                        {% endfor %}
-                    </div>
-                    <p>
-                        {{ form.submit(class="btn btn-primary") }}
-                    </p>
-                </form>    
+    <div class="container">
+      <div class="row mt-5 d-flex justify-content-center " >
+        <div class="col" style="left: 0em;">
+          <img class=""
+          src="{{ url_for('static',filename='images/hms.png')}}"
+          height="35"
+          class="logo d-inline-block align-top"
+          alt=""
+          loading="lazy"
+        />
+        <div > 
+          <h1>Health Management System</h1>
+        </div>
+        </div>
+      </div>
+      
+        <div class="row d-flex justify-content-center">
+            <form action="" method="POST" style="margin-top:50px;" novalidate>
+              <h3 class="text-center">{{ title }}</h3>
+              {{ form.hidden_tag() }}
+              <div class="form-group">
+                  {{ form.username.label() }}
+                  {{ form.username(class="form-control") }}
+                  {% for error in form.username.errors %}
+                      <span class="alert alert-danger">{{ error }}</span>
+                  {% endfor %}
+              </div>
+              <div class="form-group">
+                  {{ form.password.label() }}
+                  {{ form.password(class="form-control") }}
+                  {% for error in form.password.errors %}
+                      <span class="alert alert-danger">{{ error }}</span>
+                  {% endfor %}
+              </div>
+              <p>
+                  {{ form.submit(class="btn btn-primary") }}
+              </p>
+          </form>    
+         
         </div>
         </div>
 </body>
