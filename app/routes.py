@@ -80,6 +80,8 @@ def dischargePatient():
         patientData = patient.find_one({"patient_id":pid})
         if patientData:
             patient.delete_one({"patient_id":pid})
+            issued.delete_many({"patient_id":pid})
+            diagno.delete_many({"patient_id":pid})
             flash(f"{patientData['name']} successfully discharge!","danger")
             return redirect('/viewAllPatient')
     return render_template("dischargePatient.html",dischargePatient=True)  
