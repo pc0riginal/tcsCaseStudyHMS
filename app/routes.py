@@ -83,7 +83,7 @@ def dischargePatient():
             issued.delete_many({"patient_id":pid})
             diagno.delete_many({"patient_id":pid})
             flash(f"{patientData['name']} successfully discharge!","danger")
-            return redirect('/viewAllPatient',delete=True)
+            return redirect(url_for('/viewAllPatient',delete=True))
     return render_template("dischargePatient.html",dischargePatient=True)  
 
 
