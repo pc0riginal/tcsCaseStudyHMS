@@ -159,7 +159,7 @@ def issueMedicine():
                     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                     issued.insert_one({"patient_id":session.get('pid'),"name":i['name'],"quantity":i['quan'],"price":i['price'],"total":i['quan']*i['price'],"date":dt_string})
                 else:
-                    issued.update({"patient_id":session.get('pid')},{"$inc":{"quantity":i['quan'],"total":i['quan']*i['price']}})
+                    issued.update({"patient_id":session.get('pid'),"name":i['name']},{"$inc":{"quantity":i['quan'],"total":i['quan']*i['price']}})
             flash('succesfully issued',"success")
             session.pop("medicines")
             return redirect(url_for('patientDetail',pid=session.get('pid'),view="issue"))    
@@ -201,7 +201,7 @@ def diagnostic():
                     dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
                     conducted.insert_one({"patient_id":session.get('pid'),"name":i['name'],"amount":int(i['amount']),"conducted":1,"total":int(i['amount']),"date":dt_string})
                 else:
-                    conducted.update({"patient_id":session.get('pid')},{"$inc":{"conducted":1,"total":i['amount']}})
+                    conducted.update({"patient_id":session.get('pid'),"name":i['name']},{"$inc":{"conducted":1,"total":i['amount']}})
             flash('succesfully conducted',"success")
             session.pop("diagnostics")
             return redirect(url_for('patientDetail',pid=session.get('pid'),view="diagno"))    
